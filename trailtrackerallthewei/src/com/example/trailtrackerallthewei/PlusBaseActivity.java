@@ -7,16 +7,19 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.PlusClient;
 
 /**
  * A base class to wrap communication with the Google Play Services PlusClient.
  */
 public abstract class PlusBaseActivity extends Activity implements
-		GooglePlayServicesClient.ConnectionCallbacks,
-		GooglePlayServicesClient.OnConnectionFailedListener {
+		OnConnectionFailedListener, ConnectionCallbacks {
 
 	private static final String TAG = PlusBaseActivity.class.getSimpleName();
 
@@ -31,7 +34,7 @@ public abstract class PlusBaseActivity extends Activity implements
 	public boolean mPlusClientIsConnecting = false;
 
 	// This is the helper object that connects to Google Play Services.
-	private PlusClient mPlusClient;
+	private GoogleApiClient mPlusClient;
 
 	// The saved result from {@link #onConnectionFailed(ConnectionResult)}. If a
 	// connection
@@ -74,8 +77,11 @@ public abstract class PlusBaseActivity extends Activity implements
 		// Initialize the PlusClient connection.
 		// Scopes indicate the information about the user your application will
 		// be able to access.
-		mPlusClient = new PlusClient.Builder(this, this, this).setScopes(
-				Scopes.PLUS_LOGIN, Scopes.PLUS_ME).build();
+		mPlusClient = new GoogleApiClient.Builder(this).addApi(Plus.API)
+		         .addScope(Plus.SCOPE_PLUS_LOGIN).addScope(Plus.SCOPE_PLUS_PROFILE).addConnectionCallbacks(this).addOnConnectionFailedListener(this).
+		         build();
+		//mPlusClient = new PlusClient.Builder(this, this, this).setScopes(
+			//	Scopes.PLUS_LOGIN, Scopes.PLUS_ME).build();
 	}
 
 	/**
@@ -136,7 +142,7 @@ public abstract class PlusBaseActivity extends Activity implements
 			// Clear the default account in order to allow the user to
 			// potentially choose a
 			// different account from the account chooser.
-			mPlusClient.clearDefaultAccount();
+			Plus.AccountApi.clearDefaultAccount(mPlusClient);
 
 			// Disconnect from Google Play Services, then reconnect in order to
 			// restart the
@@ -156,15 +162,15 @@ public abstract class PlusBaseActivity extends Activity implements
 
 		if (mPlusClient.isConnected()) {
 			// Clear the default account as in the Sign Out.
-			mPlusClient.clearDefaultAccount();
+			Plus.AccountApi.clearDefaultAccount(mPlusClient);
 
 			// Revoke access to this entire application. This will call back to
 			// onAccessRevoked when it is complete, as it needs to reach the
 			// Google
 			// authentication servers to revoke all tokens.
-			mPlusClient
-					.revokeAccessAndDisconnect(new PlusClient.OnAccessRevokedListener() {
-						public void onAccessRevoked(ConnectionResult result) {
+			Plus.AccountApi.revokeAccessAndDisconnect(mPlusClient).setResultCallback(new ResultCallback<Status>() {
+						@Override
+						public void onResult(Status result) {
 							updateConnectButtonState();
 							onPlusClientRevokeAccess();
 						}
@@ -261,7 +267,7 @@ public abstract class PlusBaseActivity extends Activity implements
 	 * Successfully disconnected (called by PlusClient)
 	 */
 	@Override
-	public void onDisconnected() {
+	public void onConnectionSuspended(int i) {
 		updateConnectButtonState();
 		onPlusClientSignOut();
 	}
@@ -293,7 +299,7 @@ public abstract class PlusBaseActivity extends Activity implements
 		}
 	}
 
-	public PlusClient getPlusClient() {
+	public GoogleApiClient getPlusClient() {
 		return mPlusClient;
 	}
 

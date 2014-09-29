@@ -25,9 +25,27 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.plus.People.LoadPeopleResult;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.plus.model.people.Person;
+import com.google.android.gms.plus.model.people.PersonBuffer;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.MobileServiceQuery;
+import com.microsoft.windowsazure.mobileservices.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
+import com.microsoft.windowsazure.mobileservices.TableOperationCallback;
+import com.microsoft.windowsazure.mobileservices.TableQueryCallback;
+
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +59,7 @@ import java.util.List;
  * "Step 1" to create an OAuth 2.0 client for your package.
  */
 public class LoginActivity extends PlusBaseActivity implements
-		LoaderCallbacks<Cursor> {
+		LoaderCallbacks<Cursor>, ResultCallback<LoadPeopleResult> {
 
 	/**
 	 * A dummy authentication store containing known user names and passwords.
@@ -53,6 +71,9 @@ public class LoginActivity extends PlusBaseActivity implements
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
 	private UserLoginTask mAuthTask = null;
+	
+	private MobileServiceClient mMobileServiceClient;
+	private MobileServiceTable<UserProfile> mUserProfileTable;
 
 	// UI references.
 	private AutoCompleteTextView mEmailView;
@@ -67,6 +88,14 @@ public class LoginActivity extends PlusBaseActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		
+		try {
+			this.mMobileServiceClient = MobileServiceClientFactory.Create(this);
+			this.mUserProfileTable = this.mMobileServiceClient.getTable(UserProfile.class);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// Find the Google+ sign in button.
 		mPlusSignInButton = (SignInButton) findViewById(R.id.plus_sign_in_button);
@@ -233,6 +262,35 @@ public class LoginActivity extends PlusBaseActivity implements
 
 	@Override
 	protected void onPlusClientSignIn() {
+		
+		final GoogleApiClient plusClient = super.getPlusClient();
+		final String accountName = Plus.AccountApi.getAccountName(plusClient);
+		Plus.PeopleApi.loadVisible(plusClient, null).setResultCallback(this);
+		final Person person = Plus.PeopleApi.getCurrentPerson(plusClient);
+		
+		this.mUserProfileTable.where().field("googleAccountName").eq(accountName).execute(new TableQueryCallback<UserProfile>() {
+
+			@Override
+			public void onCompleted(List<UserProfile> profiles, int count,
+					Exception exception, ServiceFilterResponse response) {
+				
+				if (count <=0)
+				{
+					UserProfile userProfile = new UserProfile();
+					userProfile.setGoogleAccountName(accountName);
+					userProfile.setEmail(accountName);
+					userProfile.setBirthday(person.getBirthday());
+					userProfile.setName(person.getDisplayName());
+					
+					mUserProfileTable.insert(userProfile, new TableOperationCallback<UserProfile>() {
+
+						@Override
+						public void onCompleted(UserProfile entity, Exception exception, ServiceFilterResponse response) {
+						}
+					});
+				}
+			}});
+		
 		// Set up sign out and disconnect buttons.
 		Button signOutButton = (Button) findViewById(R.id.plus_sign_out_button);
 		signOutButton.setOnClickListener(new OnClickListener() {
@@ -430,5 +488,23 @@ public class LoginActivity extends PlusBaseActivity implements
 			mAuthTask = null;
 			showProgress(false);
 		}
+	}
+
+	@Override
+	public void onResult(LoadPeopleResult peopleData) {
+		if (peopleData.getStatus().getStatusCode() == CommonStatusCodes.SUCCESS) {
+		    PersonBuffer personBuffer = peopleData.getPersonBuffer();
+		    try {
+		      int count = personBuffer.getCount();
+		      for (int i = 0; i < count; i++) {
+		    	  Toast.makeText(this, personBuffer.get(i).getDisplayName(), Toast.LENGTH_SHORT).show();
+		        
+		      }
+		    } finally {
+		      personBuffer.close();
+		    }
+		  } else {
+		    Toast.makeText(this, "Error requesting visible circles: " + peopleData.getStatus(), Toast.LENGTH_LONG).show();
+		  }
 	}
 }

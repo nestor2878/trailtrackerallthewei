@@ -71,10 +71,7 @@ public class ToDoActivity extends Activity {
 		try {
 			// Create the Mobile Service Client instance, using the provided
 			// Mobile Service URL and key
-			mClient = new MobileServiceClient(
-					"https://trailtrackerallthewei.azure-mobile.net/",
-					"bEFiYcJkBUhkOzXCexJHqEwIjPOVwB41",
-					this).withFilter(new ProgressFilter());
+			mClient = MobileServiceClientFactory.Create(this, new ProgressFilter());
 
 			// Get the Mobile Service Table instance to use
 			mToDoTable = mClient.getTable(ToDoItem.class);
@@ -173,7 +170,6 @@ public class ToDoActivity extends Activity {
 				} else {
 					createAndShowDialog(exception, "Error");
 				}
-
 			}
 		});
 
