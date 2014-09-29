@@ -274,7 +274,7 @@ public class LoginActivity extends PlusBaseActivity implements
 			public void onCompleted(List<UserProfile> profiles, int count,
 					Exception exception, ServiceFilterResponse response) {
 				
-				if (count <=0)
+				if (profiles.isEmpty())
 				{
 					UserProfile userProfile = new UserProfile();
 					userProfile.setGoogleAccountName(accountName);
@@ -492,18 +492,7 @@ public class LoginActivity extends PlusBaseActivity implements
 
 	@Override
 	public void onResult(LoadPeopleResult peopleData) {
-		if (peopleData.getStatus().getStatusCode() == CommonStatusCodes.SUCCESS) {
-		    PersonBuffer personBuffer = peopleData.getPersonBuffer();
-		    try {
-		      int count = personBuffer.getCount();
-		      for (int i = 0; i < count; i++) {
-		    	  Toast.makeText(this, personBuffer.get(i).getDisplayName(), Toast.LENGTH_SHORT).show();
-		        
-		      }
-		    } finally {
-		      personBuffer.close();
-		    }
-		  } else {
+		if (peopleData.getStatus().getStatusCode() != CommonStatusCodes.SUCCESS) {
 		    Toast.makeText(this, "Error requesting visible circles: " + peopleData.getStatus(), Toast.LENGTH_LONG).show();
 		  }
 	}
