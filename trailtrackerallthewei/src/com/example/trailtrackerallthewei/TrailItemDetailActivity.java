@@ -39,7 +39,7 @@ public class TrailItemDetailActivity extends BaseActivity {
 		textViews.add((TextView) findViewById(R.id.detailTextView8));
 		textViews.add((TextView) findViewById(R.id.detailTextView9));
 		textViews.add((TextView) findViewById(R.id.detailTextView10));
-		mDetailTextViewFitBitActivities = (TextView) findViewById(R.id.detailTextViewFitBitActivities);
+		//mDetailTextViewFitBitActivities = (TextView) findViewById(R.id.detailTextViewFitBitActivities);
 
 		initializeView();
 		initializeFitBitActivities();

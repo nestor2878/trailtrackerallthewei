@@ -9,8 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="26dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="29dp"
         android:text="@string/Start" />
 
     <Button
@@ -20,7 +19,6 @@
         android:layout_alignBaseline="@+id/startTrail"
         android:layout_alignBottom="@+id/startTrail"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="38dp"
         android:text="@string/Stop" />
 
 </RelativeLayout>
