@@ -71,6 +71,7 @@ public class FinalizeTrailItemActivity extends BaseActivity {
 				Toast.makeText(getApplicationContext(),
 						"saved..", Toast.LENGTH_LONG)
 						.show();
+				setActiveTrail(null);
 				finish();
 				
 			}});

@@ -36,7 +36,7 @@ public class TrailTrackingActivity extends BaseActivity {
 
 		this.mStartButton = (Button) findViewById(R.id.startTrail);
 		this.mStopButton = (Button) findViewById(R.id.stopTrail);
-		this.mStopButton.setEnabled(false);
+		resetTrackingControls();
 
 		this.mStartButton.setOnClickListener(new OnClickListener() {
 
@@ -83,7 +83,18 @@ public class TrailTrackingActivity extends BaseActivity {
 		});
 	}
 
-	
+	@Override
+	public void onResume() {
+		super.onResume();
+		resetTrackingControls();
+	}
+
+	private void resetTrackingControls() {
+		TrailItem item = getActiveTrail();
+
+		this.mStartButton.setEnabled(item == null);
+		this.mStopButton.setEnabled(item != null);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

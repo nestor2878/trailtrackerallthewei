@@ -97,8 +97,6 @@ public class LandingActivity extends Activity implements OAuthCallback {
 	}
 
 	private void saveSettings() {
-		Toast.makeText(LandingActivity.this, "saveSettings", Toast.LENGTH_LONG)
-				.show();
 		if (mUserProfile == null) {
 			return;
 		}
@@ -106,9 +104,6 @@ public class LandingActivity extends Activity implements OAuthCallback {
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString(USERID_SETTING, mUserProfile.mId);
-
-		Toast.makeText(LandingActivity.this, "actually saved",
-				Toast.LENGTH_LONG).show();
 		editor.commit();
 	}
 
@@ -133,6 +128,7 @@ public class LandingActivity extends Activity implements OAuthCallback {
 			}
 		});
 	}
+
 	/*
 	 * * Get the information*
 	 */

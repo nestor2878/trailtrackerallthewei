@@ -65,7 +65,8 @@ public abstract class BaseActivity extends Activity {
 		SharedPreferences.Editor editor = settings.edit();
 		
 		Gson gson = new Gson();
-		editor.putString(ACTIVE_TRAIL_SETTING_KEY, gson.toJson(trail));
+		String json = trail == null ? null : gson.toJson(trail);
+		editor.putString(ACTIVE_TRAIL_SETTING_KEY, json);
 		
 		editor.commit();
 	}
