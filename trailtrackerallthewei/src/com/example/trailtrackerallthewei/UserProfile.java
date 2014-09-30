@@ -9,16 +9,18 @@ public class UserProfile implements Parcelable {
 	 */
 	@com.google.gson.annotations.SerializedName("id")
 	public String mId;
-
+	@com.google.gson.annotations.SerializedName("fitBitUserId")
 	public String fitBitUserId;
+	@com.google.gson.annotations.SerializedName("oauthtoken")
 	public String oAuthToken;
+	@com.google.gson.annotations.SerializedName("oauthsecret")
 	public String oAuthSecret;
+	@com.google.gson.annotations.SerializedName("oauthexpiresin")
 	public String oAuthExpiresIn;
+	@com.google.gson.annotations.SerializedName("oauthrequest")
 	public String oAuthRequest;
-
 	@com.google.gson.annotations.SerializedName("email")
 	public String mEmail;
-
 	@com.google.gson.annotations.SerializedName("name")
 	public String mName;
 

@@ -2,6 +2,8 @@ package com.example.trailtrackerallthewei;
 
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,6 +15,7 @@ public class TrailItemDetailActivity extends BaseActivity {
 	public static final String SELECTED_TRAIL_ID = "selectedTrailId";
 	private TrailItem mTrailItem;
 	private ArrayList<TextView> textViews;
+	private TextView mDetailTextViewFitBitActivities;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +39,24 @@ public class TrailItemDetailActivity extends BaseActivity {
 		textViews.add((TextView) findViewById(R.id.detailTextView8));
 		textViews.add((TextView) findViewById(R.id.detailTextView9));
 		textViews.add((TextView) findViewById(R.id.detailTextView10));
+		mDetailTextViewFitBitActivities = (TextView) findViewById(R.id.detailTextViewFitBitActivities);
 
 		initializeView();
+		initializeFitBitActivities();
+	}
+	
+	private void initializeFitBitActivities(){
+		FitBitApiProvider fitBitApiProvider = new FitBitApiProvider(this, super.mUserProfile);
+		fitBitApiProvider.GetActivityStats(new FitBitApiProviderCallback<FitBitActivities>(){
+
+			@Override
+			public void onComplete(FitBitActivities data) {
+				// TODO Auto-generated method stub
+				Gson gson = new Gson();
+				mDetailTextViewFitBitActivities.setText(gson.toJson(data));
+			}
+			
+		});
 	}
 
 	private void initializeView() {

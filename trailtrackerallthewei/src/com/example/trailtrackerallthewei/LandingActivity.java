@@ -62,6 +62,15 @@ public class LandingActivity extends Activity implements OAuthCallback {
 		super.onStart();
 	}
 
+	private void launchToMainActivity(UserProfile userProfile){
+		Intent intent = new Intent(LandingActivity.this,
+				TrailTrackingActivity.class);
+		intent.putExtra(BaseActivity.USERPROFILE_EXTRA_KEY,
+				userProfile);
+		startActivity(intent);
+		finish();
+	}
+	
 	public void loadSettings() {
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		String userId = settings.getString(USERID_SETTING, null);
@@ -79,14 +88,11 @@ public class LandingActivity extends Activity implements OAuthCallback {
 								Toast.makeText(LandingActivity.this,
 										exception.getMessage(),
 										Toast.LENGTH_LONG).show();
+								connectUser();
+								return;
 							}
 
-							Intent intent = new Intent(LandingActivity.this,
-									TrailTrackingActivity.class);
-							intent.putExtra(BaseActivity.USERPROFILE_EXTRA_KEY,
-									userProfile);
-							startActivity(intent);
-							finish();
+							launchToMainActivity(userProfile);
 						}
 
 					});
@@ -223,6 +229,10 @@ public class LandingActivity extends Activity implements OAuthCallback {
 							int count, Exception exception,
 							ServiceFilterResponse response) {
 
+						if (exception != null){
+							return;
+						}
+						
 						if (profiles.isEmpty()) {
 							UserProfile userProfile = new UserProfile();
 							userProfile.fitBitUserId = fitBitUser.encodedId;
@@ -241,15 +251,24 @@ public class LandingActivity extends Activity implements OAuthCallback {
 												UserProfile entity,
 												Exception exception,
 												ServiceFilterResponse response) {
-
+											if (exception != null){
+												Toast.makeText(LandingActivity.this,
+														exception.getMessage(),
+														Toast.LENGTH_LONG).show();
+												return;
+											}
+											
 											mUserProfile = entity;
 											saveSettings();
+											launchToMainActivity(mUserProfile);
 										}
 									});
 						} else {
 							mUserProfile = profiles.get(0);
 							saveSettings();
+							launchToMainActivity(mUserProfile);
 						}
+						
 					}
 				});
 	}
