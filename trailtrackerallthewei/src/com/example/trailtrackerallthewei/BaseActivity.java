@@ -1,6 +1,7 @@
 package com.example.trailtrackerallthewei;
 
 import java.net.MalformedURLException;
+import java.util.AbstractMap.SimpleEntry;
 
 import com.google.gson.Gson;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.format.Time;
+import android.util.Pair;
 import android.widget.Toast;
 
 public abstract class BaseActivity extends Activity {
@@ -42,7 +44,7 @@ public abstract class BaseActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
-
+	
 	private void loadSettings() {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
@@ -82,7 +84,15 @@ public abstract class BaseActivity extends Activity {
 		Gson gson = new Gson();
 		return gson.fromJson(activeTrailJsonString, TrailItem.class);
 	}
+	
+	protected <T> void startNewActivity(Class<T> activityClass,String key, TrailItem item){
+		Intent intent = new Intent(this, activityClass);
+		intent.putExtra(BaseActivity.USERPROFILE_EXTRA_KEY,mUserProfile);
+		intent.putExtra(key,item);
+		startActivity(intent);
+	}
 	protected <T> void startNewActivity(Class<T> activityClass){
+	
 		Intent intent = new Intent(this, activityClass);
 		intent.putExtra(BaseActivity.USERPROFILE_EXTRA_KEY,mUserProfile);
 		startActivity(intent);

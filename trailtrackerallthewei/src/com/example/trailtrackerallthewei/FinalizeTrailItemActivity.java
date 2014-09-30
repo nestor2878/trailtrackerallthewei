@@ -9,6 +9,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -72,8 +73,8 @@ public class FinalizeTrailItemActivity extends BaseActivity {
 						"saved..", Toast.LENGTH_LONG)
 						.show();
 				setActiveTrail(null);
+				startNewActivity(TrailItemDetailActivity.class, TrailItemDetailActivity.SELECTED_TRAIL_ID, updated);
 				finish();
-				
 			}});
 	}
 	

@@ -27,7 +27,7 @@ public class TrailHistoryActivity extends BaseActivity {
 		mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
 		mProgressBar.setVisibility(ProgressBar.GONE);
 		
-		mAdapter = new TrailHistoryItemAdapter(this, R.layout.trail_history_item);
+		mAdapter = new TrailHistoryItemAdapter(this, R.layout.trail_history_item, super.mUserProfile);
 		ListView listViewToDo = (ListView) findViewById(R.id.listViewTrailHistoryItem);
 		listViewToDo.setAdapter(mAdapter);
 		

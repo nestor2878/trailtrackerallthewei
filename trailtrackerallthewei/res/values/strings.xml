@@ -21,5 +21,6 @@
     <string name="menu_history">History</string>
     <string name="title_activity_finalize_trail_item">FinalizeTrailItemActivity</string>
     <string name="Save">Save</string>
+    <string name="title_activity_trail_item_detail">TrailItemDetailActivity</string>
 
 </resources>
