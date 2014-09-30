@@ -44,28 +44,41 @@ public class TrailItemDetailActivity extends BaseActivity {
 		initializeView();
 		initializeFitBitActivities();
 	}
-	
-	private void initializeFitBitActivities(){
-		FitBitApiProvider fitBitApiProvider = new FitBitApiProvider(this, super.mUserProfile);
-		fitBitApiProvider.GetActivityStats(new FitBitApiProviderCallback<FitBitActivities>(){
 
-			@Override
-			public void onComplete(FitBitActivities data) {
-				// TODO Auto-generated method stub
-				Gson gson = new Gson();
-				mDetailTextViewFitBitActivities.setText(gson.toJson(data));
-			}
-			
-		});
+	private void initializeFitBitActivities() {
+		FitBitApiProvider fitBitApiProvider = new FitBitApiProvider(this,
+				super.mUserProfile);
+		fitBitApiProvider
+				.GetActivityStats(new FitBitApiProviderCallback<FitBitActivities>() {
+
+					@Override
+					public void onComplete(FitBitActivities data) {
+						// TODO Auto-generated method stub
+						Gson gson = new Gson();
+						mDetailTextViewFitBitActivities.setText(gson
+								.toJson(data));
+					}
+
+				});
 	}
 
 	private void initializeView() {
+		LocationHelper locationHelper = new LocationHelper(this);
+
 		textViews.get(0).setText(mTrailItem.startTime);
 		textViews.get(1).setText(mTrailItem.stopTime);
-		textViews.get(2).setText(mTrailItem.startLatitude);
-		textViews.get(3).setText(mTrailItem.startLongitude);
-		textViews.get(4).setText(mTrailItem.stopLatitude);
-		textViews.get(5).setText(mTrailItem.stopLongitude);
+		textViews.get(2).setText(
+				mTrailItem.startLatitude + ", " + mTrailItem.startLongitude);
+		textViews.get(3).setText(
+				locationHelper.getFormattedAddress(
+						Double.parseDouble(mTrailItem.startLatitude),
+						Double.parseDouble(mTrailItem.startLongitude)));
+		textViews.get(4).setText(
+				mTrailItem.stopLatitude + ", " + mTrailItem.stopLongitude);
+		textViews.get(5).setText(
+				locationHelper.getFormattedAddress(
+						Double.parseDouble(mTrailItem.stopLatitude),
+						Double.parseDouble(mTrailItem.stopLongitude)));
 		textViews.get(6).setText(mTrailItem.averageHeartRate);
 		textViews.get(7).setText(mTrailItem.caloriesBurnt);
 		textViews.get(8).setText(mTrailItem.sighting);

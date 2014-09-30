@@ -54,15 +54,13 @@ public class TrailHistoryItemAdapter extends ArrayAdapter<TrailItem> {
 		startTime.setText(currentItem.startTime);
 		final TextView location = (TextView) row
 				.findViewById(R.id.trailHistoryLocation);
-		location.setText(currentItem.startLatitude + ","
-				+ currentItem.startLongitude);
+		LocationHelper locationHelper = new LocationHelper(mContext);
+		
+		location.setText(locationHelper.getFormattedAddress(Double.parseDouble(currentItem.startLatitude), Double.parseDouble(currentItem.startLongitude)));
 
 		row.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(getContext(), "clicked", Toast.LENGTH_LONG)
-						.show();
-
 				Intent intent = new Intent(getContext(),
 						TrailItemDetailActivity.class);
 				intent.putExtra(BaseActivity.USERPROFILE_EXTRA_KEY,

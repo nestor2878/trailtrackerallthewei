@@ -1,5 +1,9 @@
 package com.example.trailtrackerallthewei;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import com.google.gson.Gson;
 import com.microsoft.windowsazure.mobileservices.MobileServiceTable;
 import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
@@ -10,6 +14,8 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -50,6 +56,7 @@ public class TrailTrackingActivity extends BaseActivity {
 				LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 				Location location = lm
 						.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+				
 				double longitude = location.getLongitude();
 				double latitude = location.getLatitude();
 				trailStart.startLongitude = String.valueOf(longitude);

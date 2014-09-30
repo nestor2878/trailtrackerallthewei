@@ -7,7 +7,7 @@ public class TrailItem implements Parcelable{
 	public String id;
 	@com.google.gson.annotations.SerializedName("userid")
 	public String userId;
-	@com.google.gson.annotations.SerializedName("startlatitute")
+	@com.google.gson.annotations.SerializedName("startlatitude")
 	public String startLatitude;
 	@com.google.gson.annotations.SerializedName("startlongitude")
 	public String startLongitude;

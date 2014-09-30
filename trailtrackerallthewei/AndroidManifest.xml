@@ -53,15 +53,15 @@
 
         <activity
             android:name=".TrailHistoryActivity"
-            android:label="@string/title_activity_trail_history" >
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".FinalizeTrailItemActivity"
-            android:label="@string/title_activity_finalize_trail_item" >
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".TrailItemDetailActivity"
-            android:label="@string/title_activity_trail_item_detail" >
+            android:label="@string/app_name" >
         </activity>
     </application>
 
