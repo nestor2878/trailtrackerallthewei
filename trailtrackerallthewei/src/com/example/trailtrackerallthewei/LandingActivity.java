@@ -14,10 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.model.people.Person;
 import com.google.gson.Gson;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.MobileServiceTable;
@@ -61,8 +57,6 @@ public class LandingActivity extends Activity implements OAuthCallback {
 		}
 	}
 
-	
-
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -88,7 +82,7 @@ public class LandingActivity extends Activity implements OAuthCallback {
 							}
 
 							Intent intent = new Intent(LandingActivity.this,
-									ToDoActivity.class);
+									TrailTrackingActivity.class);
 							intent.putExtra(BaseActivity.USERPROFILE_EXTRA_KEY,
 									userProfile);
 							startActivity(intent);
@@ -143,7 +137,6 @@ public class LandingActivity extends Activity implements OAuthCallback {
 	 * * Get the information*
 	 */
 	public void onFinished(final OAuthData oAuthData) {
-
 		OAuth oauth = new OAuth(this);
 		oauth.initialize("fY0HJHCUi_R9JjLIP2XvVungmjE");
 
@@ -169,7 +162,7 @@ public class LandingActivity extends Activity implements OAuthCallback {
 				.permitAll().build());
 
 		// To make an authenticated request, you can implement OAuthRequest with
-		// your prefered way.
+		// your preferred way.
 		// Here, we use an URLConnection (HttpURLConnection) but you can use any
 		// library.
 		dd.http("https://api.fitbit.com/1/user/-/profile.json",
