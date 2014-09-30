@@ -17,5 +17,7 @@
     <string name="action_settings">Settings</string>
     <string name="Start">Start</string>
     <string name="Stop">Stop</string>
+    <string name="title_activity_trail_history">TrailHistoryActivity</string>
+    <string name="menu_history">History</string>
 
 </resources>

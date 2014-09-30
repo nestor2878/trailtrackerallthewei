@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -27,8 +28,6 @@ public class TrailTrackingActivity extends BaseActivity {
 
 	private Button mStartButton;
 	private Button mStopButton;
-	private MobileServiceTable<TrailStart> mTrailStartTable;
-	private MobileServiceTable<TrailStop> mTrailStopTable;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,37 +38,34 @@ public class TrailTrackingActivity extends BaseActivity {
 		this.mStopButton = (Button) findViewById(R.id.stopTrail);
 		this.mStopButton.setEnabled(false);
 
-		this.mTrailStartTable = super.mMobileServiceClient
-				.getTable(TrailStart.class);
-		this.mTrailStopTable = super.mMobileServiceClient
-				.getTable(TrailStop.class);
-
 		this.mStartButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				TrailStart trailStart = new TrailStart();
+				TrailItem trailStart = new TrailItem();
 				trailStart.userId = mUserProfile.mId;
-				
-				trailStart.time =GetCurrentTime();
+
+				trailStart.startTime = GetCurrentTime();
 
 				LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 				Location location = lm
 						.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 				double longitude = location.getLongitude();
 				double latitude = location.getLatitude();
-				trailStart.longitude = String.valueOf(longitude);
-				trailStart.latitude = String.valueOf(latitude);
+				trailStart.startLongitude = String.valueOf(longitude);
+				trailStart.startLatitude = String.valueOf(latitude);
 
-				mTrailStartTable.insert(trailStart,
-						new TableOperationCallback<TrailStart>() {
+				mTrailItemTable.insert(trailStart,
+						new TableOperationCallback<TrailItem>() {
 
 							@Override
-							public void onCompleted(TrailStart created,
+							public void onCompleted(TrailItem created,
 									Exception exception,
 									ServiceFilterResponse serviceFilterResponse) {
-
-								displayException(exception);
+								if (exception != null) {
+									displayException(exception);
+									return;
+								}
 								setActiveTrail(created);
 								mStartButton.setEnabled(false);
 								mStopButton.setEnabled(true);
@@ -82,34 +78,36 @@ public class TrailTrackingActivity extends BaseActivity {
 
 			@Override
 			public void onClick(View v) {
-				TrailStop trailStop = new TrailStop();
-				trailStop.userId = mUserProfile.mId;
-				trailStop.time = GetCurrentTime();
+				TrailItem trail = getActiveTrail();
+				trail.stopTime = GetCurrentTime();
 
 				LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 				Location location = lm
 						.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 				double longitude = location.getLongitude();
 				double latitude = location.getLatitude();
-				trailStop.longitude = String.valueOf(longitude);
-				trailStop.latitude = String.valueOf(latitude);
+				trail.stopLongitude = String.valueOf(longitude);
+				trail.stopLatitude = String.valueOf(latitude);
 
-				TrailStart trailStart = getActiveTrail();
-				trailStop.trailStartId = trailStart.id;
-				trailStop.calroiesBurnt = "23";
-				trailStop.heartRate = "98";
+				trail.caloriesBurnt = "23";
+				trail.averageHeartRate = "98";
 
-				mTrailStopTable.insert(trailStop,
-						new TableOperationCallback<TrailStop>() {
+				mTrailItemTable.update(trail,
+						new TableOperationCallback<TrailItem>() {
 
 							@Override
-							public void onCompleted(TrailStop created,
+							public void onCompleted(TrailItem created,
 									Exception exception,
 									ServiceFilterResponse serviceFilterResponse) {
-								displayException(exception);
-								
+								if (exception != null) {
+									displayException(exception);
+									return;
+								}
+
 								Gson gson = new Gson();
-								Toast.makeText(getApplicationContext(), gson.toJson(created),Toast.LENGTH_LONG).show();
+								Toast.makeText(getApplicationContext(),
+										gson.toJson(created), Toast.LENGTH_LONG)
+										.show();
 								mStartButton.setEnabled(true);
 								mStopButton.setEnabled(false);
 							}
@@ -118,12 +116,13 @@ public class TrailTrackingActivity extends BaseActivity {
 		});
 	}
 
-	private String GetCurrentTime(){
+	private String GetCurrentTime() {
 		Time now = new Time();
 		now.setToNow();
-		return now.format2445();
+		return now.format("%d.%m.%Y %H.%M.%S");
+		
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -139,6 +138,12 @@ public class TrailTrackingActivity extends BaseActivity {
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
+		}
+		if (id == R.id.menu_history) {
+			Intent intent = new Intent(this, TrailHistoryActivity.class);
+			intent.putExtra(BaseActivity.USERPROFILE_EXTRA_KEY,
+					super.mUserProfile);
+			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
 	}

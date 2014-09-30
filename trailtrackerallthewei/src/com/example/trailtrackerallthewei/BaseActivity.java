@@ -21,6 +21,7 @@ public abstract class BaseActivity extends Activity {
 
 	protected MobileServiceClient mMobileServiceClient;
 	protected MobileServiceTable<UserProfile> mUserProfileTable;
+	protected MobileServiceTable<TrailItem> mTrailItemTable;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,8 @@ public abstract class BaseActivity extends Activity {
 			this.mMobileServiceClient = MobileServiceClientFactory.Create(this);
 			this.mUserProfileTable = this.mMobileServiceClient
 					.getTable(UserProfile.class);
+			this.mTrailItemTable = this.mMobileServiceClient
+					.getTable(TrailItem.class);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -56,17 +59,17 @@ public abstract class BaseActivity extends Activity {
 		}
 	}
 	
-	protected void setActiveTrail(TrailStart trailStart){
+	protected void setActiveTrail(TrailItem trail){
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
 		
 		Gson gson = new Gson();
-		editor.putString(ACTIVE_TRAIL_SETTING_KEY, gson.toJson(trailStart));
+		editor.putString(ACTIVE_TRAIL_SETTING_KEY, gson.toJson(trail));
 		
 		editor.commit();
 	}
 	
-	protected TrailStart getActiveTrail(){
+	protected TrailItem getActiveTrail(){
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		String activeTrailJsonString = settings.getString(ACTIVE_TRAIL_SETTING_KEY, null);
 		
@@ -75,7 +78,7 @@ public abstract class BaseActivity extends Activity {
 		}
 		
 		Gson gson = new Gson();
-		return gson.fromJson(activeTrailJsonString, TrailStart.class);
+		return gson.fromJson(activeTrailJsonString, TrailItem.class);
 	}
 	
 	
