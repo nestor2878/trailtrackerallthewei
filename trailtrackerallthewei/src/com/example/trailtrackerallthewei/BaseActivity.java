@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.widget.Toast;
 
 public abstract class BaseActivity extends Activity {
@@ -80,12 +81,23 @@ public abstract class BaseActivity extends Activity {
 		Gson gson = new Gson();
 		return gson.fromJson(activeTrailJsonString, TrailItem.class);
 	}
-	
+	protected <T> void startNewActivity(Class<T> activityClass){
+		Intent intent = new Intent(this, activityClass);
+		intent.putExtra(BaseActivity.USERPROFILE_EXTRA_KEY,mUserProfile);
+		startActivity(intent);
+	}
 	
 	protected void displayException(Exception e){
 		if (e == null){
 			return;
 		}
 		Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+	}
+	
+	protected String getCurrentTime() {
+		Time now = new Time();
+		now.setToNow();
+		return now.format("%d.%m.%Y %H.%M.%S");
+		
 	}
 }

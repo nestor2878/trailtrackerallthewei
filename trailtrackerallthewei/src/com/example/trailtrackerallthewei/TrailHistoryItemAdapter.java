@@ -48,8 +48,8 @@ public class TrailHistoryItemAdapter extends ArrayAdapter<TrailItem> {
 		row.setTag(currentItem);
 		final TextView startTime = (TextView) row.findViewById(R.id.trailHistoryStart);
 		startTime.setText(currentItem.startTime);
-		final TextView stopTime = (TextView) row.findViewById(R.id.trailHistoryEnd);
-		stopTime.setText(currentItem.stopTime);
+		final TextView location = (TextView) row.findViewById(R.id.trailHistoryLocation);
+		location.setText(currentItem.startLatitude+","+currentItem.startLongitude);
 		
 		row.setOnClickListener(new OnClickListener(){
 			@Override

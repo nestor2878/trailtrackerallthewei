@@ -20,4 +20,8 @@ public class TrailItem {
 	public String averageHeartRate;
 	@com.google.gson.annotations.SerializedName("caloriesburnt")
 	public String caloriesBurnt;
+	@com.google.gson.annotations.SerializedName("sighting")
+	public String sighting;
+	@com.google.gson.annotations.SerializedName("notes")
+	public String notes;
 }

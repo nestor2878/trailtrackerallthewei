@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_weight="0.12"
-            android:text="@string/mobile_services"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <ProgressBar

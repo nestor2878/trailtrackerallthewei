@@ -45,7 +45,7 @@ public class TrailTrackingActivity extends BaseActivity {
 				TrailItem trailStart = new TrailItem();
 				trailStart.userId = mUserProfile.mId;
 
-				trailStart.startTime = GetCurrentTime();
+				trailStart.startTime = getCurrentTime();
 
 				LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 				Location location = lm
@@ -78,50 +78,12 @@ public class TrailTrackingActivity extends BaseActivity {
 
 			@Override
 			public void onClick(View v) {
-				TrailItem trail = getActiveTrail();
-				trail.stopTime = GetCurrentTime();
-
-				LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-				Location location = lm
-						.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-				double longitude = location.getLongitude();
-				double latitude = location.getLatitude();
-				trail.stopLongitude = String.valueOf(longitude);
-				trail.stopLatitude = String.valueOf(latitude);
-
-				trail.caloriesBurnt = "23";
-				trail.averageHeartRate = "98";
-
-				mTrailItemTable.update(trail,
-						new TableOperationCallback<TrailItem>() {
-
-							@Override
-							public void onCompleted(TrailItem created,
-									Exception exception,
-									ServiceFilterResponse serviceFilterResponse) {
-								if (exception != null) {
-									displayException(exception);
-									return;
-								}
-
-								Gson gson = new Gson();
-								Toast.makeText(getApplicationContext(),
-										gson.toJson(created), Toast.LENGTH_LONG)
-										.show();
-								mStartButton.setEnabled(true);
-								mStopButton.setEnabled(false);
-							}
-						});
+				startNewActivity(FinalizeTrailItemActivity.class);
 			}
 		});
 	}
 
-	private String GetCurrentTime() {
-		Time now = new Time();
-		now.setToNow();
-		return now.format("%d.%m.%Y %H.%M.%S");
-		
-	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -140,10 +102,7 @@ public class TrailTrackingActivity extends BaseActivity {
 			return true;
 		}
 		if (id == R.id.menu_history) {
-			Intent intent = new Intent(this, TrailHistoryActivity.class);
-			intent.putExtra(BaseActivity.USERPROFILE_EXTRA_KEY,
-					super.mUserProfile);
-			startActivity(intent);
+			startNewActivity(TrailHistoryActivity.class);
 		}
 		return super.onOptionsItemSelected(item);
 	}
