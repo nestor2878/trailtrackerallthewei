@@ -48,7 +48,7 @@ public class LandingActivity extends Activity implements OAuthCallback {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		initializeMobileServiceClient();
-		loadSettings();		
+		loadSettings();
 	}
 
 	private void initializeMobileServiceClient() {
@@ -61,7 +61,71 @@ public class LandingActivity extends Activity implements OAuthCallback {
 		}
 	}
 
-	private void connectUser(){
+	
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+	}
+
+	public void loadSettings() {
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		String userId = settings.getString(USERID_SETTING, null);
+
+		if (userId != null) {
+			this.mUserProfileTable.lookUp(userId,
+					new TableOperationCallback<UserProfile>() {
+
+						@Override
+						public void onCompleted(UserProfile userProfile,
+								Exception exception,
+								ServiceFilterResponse serviceFilterResponse) {
+
+							if (exception != null) {
+								Toast.makeText(LandingActivity.this,
+										exception.getMessage(),
+										Toast.LENGTH_LONG).show();
+							}
+
+							Intent intent = new Intent(LandingActivity.this,
+									ToDoActivity.class);
+							intent.putExtra(BaseActivity.USERPROFILE_EXTRA_KEY,
+									userProfile);
+							startActivity(intent);
+							finish();
+						}
+
+					});
+
+		} else {
+			connectUser();
+		}
+	}
+
+	private void saveSettings() {
+		Toast.makeText(LandingActivity.this, "saveSettings", Toast.LENGTH_LONG)
+				.show();
+		if (mUserProfile == null) {
+			return;
+		}
+
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putString(USERID_SETTING, mUserProfile.mId);
+
+		Toast.makeText(LandingActivity.this, "actually saved",
+				Toast.LENGTH_LONG).show();
+		editor.commit();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+
+		saveSettings();
+	}
+
+	private void connectUser() {
 		setContentView(R.layout.landing_activity);
 
 		final OAuth o = new OAuth(this);
@@ -75,52 +139,6 @@ public class LandingActivity extends Activity implements OAuthCallback {
 			}
 		});
 	}
-	
-	@Override
-	protected void onStart() {
-		super.onStart();
-	}
-
-	public void loadSettings() {
-		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-		String userId = settings.getString(USERID_SETTING, null);
-		
-		if (userId != null)
-		{
-			Intent intent = new Intent(this, ToDoActivity.class);
-			startActivity(intent);
-		}
-		else
-		{
-			connectUser();
-		}
-	}
-
-	private void saveSettings() {
-		Toast.makeText(LandingActivity.this,
-				"saveSettings", Toast.LENGTH_LONG)
-				.show();
-		if (mUserProfile == null) {
-			return;
-		}
-
-		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-		SharedPreferences.Editor editor = settings.edit();
-		editor.putString(USERID_SETTING, mUserProfile.mId);
-		
-		Toast.makeText(LandingActivity.this,
-				"actually saved", Toast.LENGTH_LONG)
-				.show();
-		editor.commit();
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-
-		saveSettings();
-	}
-
 	/*
 	 * * Get the information*
 	 */
@@ -239,8 +257,7 @@ public class LandingActivity extends Activity implements OAuthCallback {
 											saveSettings();
 										}
 									});
-						}
-						else{
+						} else {
 							mUserProfile = profiles.get(0);
 							saveSettings();
 						}

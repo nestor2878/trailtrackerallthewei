@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.MobileServiceTable;
@@ -26,7 +27,7 @@ import com.microsoft.windowsazure.mobileservices.ServiceFilterResponseCallback;
 import com.microsoft.windowsazure.mobileservices.TableOperationCallback;
 import com.microsoft.windowsazure.mobileservices.TableQueryCallback;
 
-public class ToDoActivity extends Activity {
+public class ToDoActivity extends BaseActivity {
 
 	/**
 	 * Mobile Service Client reference
@@ -60,6 +61,7 @@ public class ToDoActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_to_do);
+		Toast.makeText(this, super.mUserProfile.mName, Toast.LENGTH_LONG).show();
 		
 		mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
 		ActionBar actionBar = getActionBar();
