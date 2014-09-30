@@ -277,10 +277,6 @@ public class LoginActivity extends PlusBaseActivity implements
 				if (profiles.isEmpty())
 				{
 					UserProfile userProfile = new UserProfile();
-					userProfile.setGoogleAccountName(accountName);
-					userProfile.setEmail(accountName);
-					userProfile.setBirthday(person.getBirthday());
-					userProfile.setName(person.getDisplayName());
 					
 					mUserProfileTable.insert(userProfile, new TableOperationCallback<UserProfile>() {
 

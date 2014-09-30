@@ -5,37 +5,25 @@ public class UserProfile {
 	 * Id
 	 */
 	@com.google.gson.annotations.SerializedName("id")
-	private String mId;
+	public String mId;
 	
-	/**
-	 * Indicates the google account name attached to this profile if any
-	 */
-	@com.google.gson.annotations.SerializedName("googleAccountName")
-	private String mGoogleAccountName;
+	public String fitBitUserId;
+	public String oAuthToken;
+	public String oAuthSecret;
+	public String oAuthExpiresIn;
+	public String oAuthRequest;
 	
 	/**
 	 * Email
 	 */
 	@com.google.gson.annotations.SerializedName("email")
-	private String mEmail;
-	
-	/**
-	 * The password
-	 */
-	@com.google.gson.annotations.SerializedName("password")
-	private String mPassword;
-	
-	/**
-	 * The birthday
-	 */
-	@com.google.gson.annotations.SerializedName("birthday")
-	private String mBirthday;
+	public String mEmail;
 	
 	/**
 	 * The name
 	 */
 	@com.google.gson.annotations.SerializedName("name")
-	private String mName;
+	public String mName;
 
 	/**
 	 * ToDoItem constructor
@@ -47,27 +35,6 @@ public class UserProfile {
 	public String toString() {
 		return getId();
 	}
-
-	/**
-	 * Initializes a new UserProfile
-	 * 
-	 */
-	public UserProfile(String id, String googleAccountName, String password, String email, String name, String birthday) {
-		this.setId(id);
-		this.setGoogleAccountName(googleAccountName);
-		this.setPassword(password);
-		this.setBirthday(birthday);
-		this.setName(name);
-		this.setEmail(email);
-	}
-
-	public String getPasswrod(){
-		return this.mPassword;
-	}
-	
-	public final void setPassword(String password) {
-		this.mPassword = password;
-	}
 	
 	public String getEmail(){
 		return this.mEmail;
@@ -76,15 +43,7 @@ public class UserProfile {
 	public final void setEmail(String email) {
 		this.mEmail = email;
 	}
-	
-	public String getBirthday(){
-		return this.mBirthday;
-	}
-	
-	public final void setBirthday(String birthday) {
-		this.mBirthday = birthday;
-	}
-	
+
 	public String getName(){
 		return this.mName;
 	}
@@ -108,13 +67,6 @@ public class UserProfile {
 	 */
 	public final void setId(String id) {
 		mId = id;
-	}
-
-	public String getGoogleAccountName(){
-		return mGoogleAccountName;
-	}
-	public final void setGoogleAccountName(String googleAccountName){
-		mGoogleAccountName = googleAccountName;
 	}
 	
 	@Override
